@@ -1,21 +1,23 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-public class AppUser {
+@AllArgsConstructor
+@Builder
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +26,8 @@ public class AppUser {
     @Column
     private String name;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column
+    private String lastname;
 
     @Column
     private String email;
@@ -33,23 +35,44 @@ public class AppUser {
     @Column
     private String password;
 
-    @Column
-    private Boolean active;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column
     private String address;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"user"})
-    private Set<Reservation> reservations = new HashSet<>();
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Review> reviews;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "roles", referencedColumnName = "id")
-    private Role role;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"user"})
-    private Set<Score> scores = new HashSet<>();
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
 
 

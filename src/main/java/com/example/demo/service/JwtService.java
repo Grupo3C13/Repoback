@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 @Service
-public class JwtServiceImp {
+public class JwtService {
     private static final String SECRET_KEY="4A6B5852333475764B5871342F7A423F456D416775476A4B6C4E735267556B597033733676397924";
 
     public String getToken(UserDetails user) {

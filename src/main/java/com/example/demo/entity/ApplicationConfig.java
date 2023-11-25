@@ -1,6 +1,6 @@
-package com.proyecto.onlybooks.entity;
+package com.example.demo.entity;
 
-import com.proyecto.onlybooks.repository.IUserRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.naming.AuthenticationException;
-
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final IUserRepository iUserRepository;
+    private final UserRepository userRepository;
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -42,7 +41,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailService() {
-        return username -> iUserRepository.findByEmail(username)
+        return username -> userRepository.findByEmail(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 

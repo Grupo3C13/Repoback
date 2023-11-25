@@ -1,9 +1,10 @@
-package com.proyecto.onlybooks.controller;
 
-import com.proyecto.onlybooks.entity.AuthResponse;
-import com.proyecto.onlybooks.entity.LoginRequest;
-import com.proyecto.onlybooks.entity.RegisterRequest;
-import com.proyecto.onlybooks.service.impl.AuthService;
+package com.example.demo.controller;
+
+import com.example.demo.entity.SignUpRequest;
+import com.example.demo.service.AuthService;
+import com.example.demo.service.LoginRequest;
+import com.example.demo.entity.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) throws Exception
+    public ResponseEntity<AuthResponse> register(@RequestBody SignUpRequest request) throws Exception
     {
         return ResponseEntity.ok(authService.register(request) );
     }

@@ -59,8 +59,8 @@ public class Product {
     @JsonIgnoreProperties(value = {"product","user"})
     private Set<Reservation> reservations = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"product"})
-    private Set<Score> scores = new HashSet<>();
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    @JsonIgnoreProperties(value = {"product"})
+//    private Set<Score> scores = new HashSet<>();
 
 }
