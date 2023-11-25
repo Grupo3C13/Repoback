@@ -14,5 +14,6 @@ public class SignUpRequest {
     String password;
     String name;
     String lastname;
+    Integer dni;
 
 }
