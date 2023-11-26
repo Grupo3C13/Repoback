@@ -24,7 +24,7 @@ public class Review {
     private LocalDateTime date;
 
     @Column
-    private double value;
+    private int value;
 
     @Column
     private String comment;

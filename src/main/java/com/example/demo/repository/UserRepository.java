@@ -15,6 +15,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-//    List<Product> searchFavs(@Param("userId") Long userId);
+    @Query("SELECT u.productsFavs FROM User u WHERE u.id = :userId")
+    List<Product> buscarFavoritos(@Param("userId") Long userId);
 //    List<User> searchProductsFavs(@Param("productId") Long bookId);
 }
