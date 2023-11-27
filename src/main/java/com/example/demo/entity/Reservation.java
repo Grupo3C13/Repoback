@@ -1,42 +1,39 @@
 package com.example.demo.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-@Getter
-@Setter
-@ToString
+@Entity
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "reservations")
+@Table(name="reservation")
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="start_date")
-    private LocalDateTime startDate;
-
-    @Column(name="end_date")
-    private LocalDateTime endDate;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler","name","description","active","price","brand","model","category","policies","images","reservations","scores"})
-    private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnoreProperties(value = {"name","lastName","email","password","active","address","reservations","role","scores","hibernateLazyInitializer","handler"})
+    // Muchos BookRent puede tener un User.
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private User user;
 
-    @Column
-    private String data;
+    // Muchos BookRent puede tener un Book.
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    private Date startDate;
+
+    private Date returnDate;
+
 }

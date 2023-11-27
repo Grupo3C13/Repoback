@@ -20,23 +20,23 @@ public class NotaSeguraApplication {
 		SpringApplication.run(NotaSeguraApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner demo(JdbcTemplate jdbcTemplate) {
-		return (args) -> {
-
-			System.out.println("Database connection successful.");
-		};
-	}
-
-	@Bean
-	public WebMvcConfigurer corsConfigurer(){
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				//WebMvcConfigurer.super.addCorsMappings(registry);
-				registry.addMapping("/**").allowedOrigins("*");
-			}
-		};
-	}
+//	@Bean
+//	public CommandLineRunner demo(JdbcTemplate jdbcTemplate) {
+//		return (args) -> {
+//
+//			System.out.println("Database connection successful.");
+//		};
+//	}
+//
+//	@Bean
+//	public WebMvcConfigurer corsConfigurer(){
+//		return new WebMvcConfigurer() {
+//			@Override
+//			public void addCorsMappings(CorsRegistry registry) {
+//				//WebMvcConfigurer.super.addCorsMappings(registry);
+//				registry.addMapping("/**").allowedOrigins("*");
+//			}
+//		};
+//	}
 
 }

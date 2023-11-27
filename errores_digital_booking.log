@@ -3,3 +3,10 @@
 [2023-11-2523:13:49] [ INFO ] [User:58] User - buscarPorId: Se encontro el usuario y se convertira a DTO para ser devuelto
 [2023-11-2523:16:02] [ ERROR] [User:115] No se pudo agregar a favoritos.
 [2023-11-2523:16:21] [ INFO ] [User:38] User - guardar: Se va a guardar el usuario
+[2023-11-2523:17:24] [ INFO ] [User:38] User - guardar: Se va a guardar el usuario
+[2023-11-2523:17:34] [ INFO ] [User:38] User - guardar: Se va a guardar el usuario
+[2023-11-2523:19:46] [ INFO ] [User:38] User - guardar: Se va a guardar el usuario
+[2023-11-2523:21:19] [ INFO ] [User:38] User - guardar: Se va a guardar el usuario
+[2023-11-2619:40:07] [ INFO ] [User:48] e esta iterando el array de usuarios
+[2023-11-2619:55:21] [ INFO ] [User:34] Caracteristica - guardar: Se va a guardar la característica
+[2023-11-2620:05:37] [ INFO ] [User:34] Caracteristica - guardar: Se va a guardar la característica
