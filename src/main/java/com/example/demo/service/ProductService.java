@@ -1,76 +1,190 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Category;
-import com.example.demo.entity.Policy;
-import com.example.demo.entity.Product;
-import com.example.demo.exceptions.BadRequestException;
+import com.example.demo.dto.ProductDTO;
+import com.example.demo.dto.ProductResume;
+import com.example.demo.entity.*;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 @Service
 public class ProductService {
 
-    @Autowired
-    ProductRepository productRepository;
+    private static final Logger logger = Logger.getLogger(ProductService.class);
 
-    @Autowired
-    CategoryService categoryService;
+    private final ProductRepository productRepository;
+    private final CharacteristicsService characteristicsService;
+    private final CategoryService categoryService;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final PolicyService policyService;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    PolicyService policyService;
+    public ProductService(ProductRepository productRepository, CharacteristicsService characteristicsService, CategoryService categoryService, UserRepository userRepository, UserService userService, PolicyService policyService, ObjectMapper objectMapper) {
+        this.productRepository = productRepository;
+        this.characteristicsService = characteristicsService;
+        this.categoryService = categoryService;
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.policyService = policyService;
+        this.objectMapper = objectMapper;
+    }
 
-
-    public Product addProduct (Product product){
-        Optional<Category> categoriaBuscada = categoryService.getCategoryById(product.getCategory().getId());
-        product.setCategory(categoriaBuscada.get());
-
-        Set<Policy> policies =  new HashSet<>();
-        for (Policy policy : product.getPolicies()){
-            Optional<Policy> policyBuscada = policyService.findPolicyById(policy.getId());
-            policies.add(policyBuscada.get());
+    public Long addProduct(Product product) throws ResourceNotFoundException {
+        logger.info("Libros - guardar: Se va a guardar el libro");
+        if(product.getCantReviews()==null){
+            product.setCantReviews(0);
+            product.setScore(0d);
         }
-        product.setPolicies(policies);
-        return productRepository.save(product);
+        Long id = productRepository.save(product).getId();
+        return product.getId();
     }
 
-    public List<Product> getAllProducts() {
-//        List<Product> productFound = productRepository.findAll();
-//        List<Product> products = new ArrayList<>();
-//        for (Product product : productFound) {
-//            products.add(product);
-//        }
-        return productRepository.findAll();
-    }
-    public Optional<Product> findProductById(Long id){
-        return productRepository.findById(id);
+    public List<ProductDTO> showAll() throws ResourceNotFoundException {
+        objectMapper.registerModule(new JavaTimeModule());
+        List<ProductDTO> productDTOS = productRepository.findAll()
+                .stream()
+                .map(product -> {
+                    try {
+                        Long id = product.getId();
+                        List<String> images = buscarListaImagenes(id);
+                        List<Category> categories = buscarCategoria(id);
+                        List<Characteristics> characteristics=buscarCaracteristica(id);
+                        if (images == null) {
+                            throw new ResourceNotFoundException("Imagenes no encontradas.");
+                        }
+                        ProductDTO productDTO = objectMapper.convertValue(product, ProductDTO.class);
+                        productDTO.setCategories(categories);
+                        productDTO.setCharacteristics(characteristics);
+                        return productDTO;
+                    } catch (ResourceNotFoundException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return productDTOS;
     }
 
-    public Optional<List<Product>> findAllByCategory(Long id) {
-        return productRepository.findAllByCategory_Id(id);
-    }
-
-
-    public Product updateProduct(Product product) throws BadRequestException {
-        Optional<Product> productSearched = findProductById(product.getId());
-        Optional<Category> categorySearched = categoryService.getCategoryById(product.getCategory().getId());
-        if (productSearched.isPresent() && categorySearched.isPresent()){
-            return productRepository.save(product);
-        }else {
-            throw new BadRequestException("It is not possible to update the Product with the id: "+product.getId()+ "because the necessary data to make the request is not found.");
-        }
-    }
-
-    public void deletePdoductById(Long id) throws ResourceNotFoundException {
-        Optional<Product> productBuscado = findProductById(id);
-        if (productBuscado.isPresent()){
-            productRepository.deleteById(id);
+    public ProductDTO searchById(Long id) throws ResourceNotFoundException {
+        objectMapper.registerModule(new JavaTimeModule());
+        Optional<Product> found = productRepository.findById(id);
+        if (found.isPresent()) {
+            Product p = found.get();
+            List<String> images = buscarListaImagenes(id);
+            List<Category> categorias = buscarCategoria(id);
+            List<Characteristics> characteristics=buscarCaracteristica(id);
+            ProductDTO productDTO = objectMapper.convertValue(found, ProductDTO.class);
+            productDTO.setListImgUrl(images);
+            productDTO.setCategories(categorias);
+            productDTO.setCharacteristics(characteristics);
+            return productDTO;
         } else {
-            throw new ResourceNotFoundException("It is not possible delete the Product with the id: "+id);
+            throw new ResourceNotFoundException("El libro no existe");
         }
+    }
+
+    public List<String> buscarListaImagenes(Long id) throws ResourceNotFoundException {
+        List<String> lista = productRepository.searchImage(id);
+        if (lista != null) {
+            return lista;
+        } else {
+            throw new ResourceNotFoundException("No se encontraron imagenes para el libro con id: " + id);
+        }
+    }
+    public List<Category> buscarCategoria(Long id) throws ResourceNotFoundException{
+        List<Category> lista = productRepository.searchCategoryById(id);
+        if(lista!=null){
+            return lista;
+        }else{
+            throw new ResourceNotFoundException("No se encontraron categorias.");
+        }
+    }
+    public List<Characteristics> buscarCaracteristica(Long id) throws ResourceNotFoundException{
+        List<Characteristics> lista = productRepository.searchCharacteristicsById(id);
+        if(lista!=null){
+            return lista;
+        }else{
+            throw new ResourceNotFoundException("No se encontraron categorias.");
+        }
+    }
+    public Product buscarPorId2(Long id) throws  ResourceNotFoundException {
+        Optional<Product> found = productRepository.findById(id);
+        if (found.isPresent()) {
+            Product p = found.get();
+            List<Category> categories = buscarCategoria(id);
+            List<Characteristics> characteristics = buscarCaracteristica(id);
+            p.setCategories(categories);
+            p.setCharacteristics(characteristics);
+            return p;
+        } else {
+            logger.warn("No se encontro ninguno con ese ID");
+            throw new ResourceNotFoundException("No existe");
+        }
+    }
+    public void guardarCategoria(Long productId, Long categoriesId) throws ResourceNotFoundException{
+        Product p = this.buscarPorId2(productId);
+        Category c = categoryService.getCategoryById(categoriesId);
+        List<Category> lista = p.getCategories();
+        lista.add(c);
+        p.setCategories(lista);
+        this.addProduct(p);
+    }
+    public void guardarCaracteristica(Long productId, Long caracteristicaId) throws ResourceNotFoundException{
+        Product p = this.buscarPorId2(productId);
+        Characteristics c = characteristicsService.buscarPorId(caracteristicaId);
+        List<Characteristics> lista = p.getCharacteristics();
+        lista.add(c);
+        p.setCharacteristics(lista);
+        this.addProduct(p);
+    }
+
+    public void update(Product product) throws ResourceNotFoundException {
+        logger.info("Se actualiza el producto");
+        addProduct(product);
+    }
+    public List<ProductResume> listEverything() throws ResourceNotFoundException{
+        List<ProductResume> lista = productRepository.findProductResume();
+        for(ProductResume b : lista){
+            b.setCategories(productRepository.searchCategoryById(b.getId()));
+            List<String> listaImagenes = productRepository.searchImage(b.getId());
+            String imagen = listaImagenes.stream().findFirst().orElse(null);
+            b.setImgUrl(imagen);
+        }
+        return lista;
+    }
+
+    public void delete(Long id) throws ResourceNotFoundException {
+        System.out.println("DENTRO DE ELIMINAR LIBRO");
+        Optional<Product> found = productRepository.findById(id);
+        if (found.isPresent()) {
+            deleteAllFavs(id);
+            logger.warn("Se ha eliminado el libro");
+        } else {
+            logger.error("No se ha encontrado con id " + id);
+            throw new ResourceNotFoundException("No se ha encontrado");
+        }
+    }
+
+    public void deleteAllFavs(Long productId) throws ResourceNotFoundException {
+        System.out.println("eliminando");
+        List<User> listUser = userRepository.searchProductsFavs(productId);
+
+        for(User u : listUser){
+            System.out.println("USUARIO");
+
+            userService.eliminarFavorito(u.getId(),productId);
+        }
+        userRepository.deleteById(productId);
     }
 
 }

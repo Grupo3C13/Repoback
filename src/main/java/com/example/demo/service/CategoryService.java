@@ -1,9 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Category;
+import com.example.demo.entity.User;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.repository.CategoryRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,37 +16,49 @@ import java.util.Optional;
 @Service
 public class CategoryService {
 
-    @Autowired
+    private static final Logger logger = Logger.getLogger(User.class);
+
     CategoryRepository categoryRepository;
 
-    public Category addCategory(Category category){
+    private ObjectMapper objectMapper;
 
-        return categoryRepository.save(category);
+    public CategoryService(CategoryRepository categoryRepository, ObjectMapper objectMapper) {
+        this.categoryRepository = categoryRepository;
+        this.objectMapper = objectMapper;
     }
 
+    public Long guardar(Category category) {
+        logger.info("Categoria guardada");
+        categoryRepository.save(category);
+        return category.getId();
+    }
     public List<Category> getAllCategories(){
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategoryById(Long id){
-        return categoryRepository.findById(id);
-    }
-
-    public Category updateCategory(Category category) throws BadRequestException{
-        Optional<Category> categorySearched = getCategoryById(category.getId());
-        if (categorySearched.isPresent()){
-            return categoryRepository.save(category);
+    public Category getCategoryById(Long id) throws ResourceNotFoundException {
+        Optional<Category> found = categoryRepository.findById(id);
+        if (found.isPresent()) {
+            logger.info("Se encontro la categoria");
+            return found.get();
         } else {
-            throw  new BadRequestException("Could not update category with id: " +category.getId()+ " and name" + category.getName());
+            logger.warn("No se encontro ninguna categoria con ese ID");
+            throw new ResourceNotFoundException("La categoria no existe");
         }
     }
 
-    public void deletecategory(Long id) throws ResourceNotFoundException{
-        Optional<Category> categorySearched = getCategoryById(id);
-        if (categorySearched.isPresent()){
+        public void updateCategory(Category categoria) {
+             logger.info("Se actualiza la categoria");
+             guardar(categoria);
+}
+        public void deletecategory(Long id) throws ResourceNotFoundException {
+        Optional<Category> found = categoryRepository.findById(id);
+        if (found.isPresent()) {
             categoryRepository.deleteById(id);
-        }else {
-            throw new ResourceNotFoundException("The Category with the id: " + id + " does not exist.");
+            logger.warn("Se ha eliminado la categoria");
+        } else {
+            logger.error("No se ha encontrado ninguna categoria con id " + id);
+            throw new ResourceNotFoundException("No se encuentra la categoria");
         }
     }
 }

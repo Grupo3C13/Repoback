@@ -26,12 +26,11 @@ public class Category {
     @Column
     private String description;
 
-    @Column
-    private  String url;
 
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<Product> products = new HashSet<>();;
+    private String imagen;
+//
+//    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private Set<Product> products = new HashSet<>();;
 
 }

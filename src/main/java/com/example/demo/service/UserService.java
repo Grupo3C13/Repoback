@@ -93,7 +93,7 @@ public class UserService  {
 
     public List<Product> listarFavoritos(Long id) throws ResourceNotFoundException{
         System.out.println("Buscando Favorito");
-        List<Product> lista = userRepository.buscarFavoritos(id);
+        List<Product> lista = userRepository.searchFavs(id);
         if(lista != null){
             return lista;
         }else{
@@ -102,13 +102,13 @@ public class UserService  {
         }
     }
 
-    public void guardarFavorito(Long userId, Long bookId) throws ResourceNotFoundException{
+    public void guardarFavorito(Long userId, Long productId) throws ResourceNotFoundException{
         Optional<User> u = userRepository.findById(userId);
-        Optional<Product> b = productRepository.findById(bookId);
+        Optional<Product> p = productRepository.findById(productId);
         List<Product> listaFav = null;
-        if(u.isPresent()&& b.isPresent()){
+        if(u.isPresent()&& p.isPresent()){
             listaFav= u.get().getProductsFavs();
-            listaFav.add(b.get());
+            listaFav.add(p.get());
             u.get().setProductsFavs(listaFav);
             guardar(u.get());
         }else {
@@ -117,14 +117,14 @@ public class UserService  {
         }
     }
 
-    public void eliminarFavorito(Long userId, Long bookId) throws ResourceNotFoundException{
+    public void eliminarFavorito(Long userId, Long productId) throws ResourceNotFoundException{
         Optional<User> u = userRepository.findById(userId);
-        Optional<Product> b = productRepository.findById(bookId);
+        Optional<Product> p = productRepository.findById(productId);
 
         List<Product> listaFav = null;
-        if(u.isPresent()&& b.isPresent()){
+        if(u.isPresent()&& p.isPresent()){
             listaFav= u.get().getProductsFavs();
-            listaFav.remove(b.get());
+            listaFav.remove(p.get());
             u.get().setProductsFavs(listaFav);
             guardar(u.get());
         }else {

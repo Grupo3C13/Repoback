@@ -30,27 +30,22 @@ public class UserController {
         return listarUsers;
     }
 
-    // En la url "/user/{id}" retorno el UserDTO deseado (segun el ID) y si no lo encuentra se dispara una Exception
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> buscarUnUser(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok(userService.buscarPorId(id));
     }
-
-    // En la url "/user/agregar" hacemos un POST para guardar el user
     @PostMapping("/agregar")
     public ResponseEntity<?> agregarUser(@RequestBody User user) {
         userService.guardar(user);
         return ResponseEntity.status(HttpStatus.OK).body(user.getId());
     }
 
-    // En la url "/user/modificar" actualizamos un user ya existente
     @PutMapping("/modificar")
     public ResponseEntity<?> actualizarUnUser(@RequestBody User user) {
         userService.modificar(user);
         return ResponseEntity.ok().body("Se modifico el usuario.");
     }
 
-    // En la url "/user/eliminar/{id}" utilizamos el metodo DELETE para eliminar un user segun su ID, si no existe lanzo ResourceNotFoundException
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminarProduct( @PathVariable Long id) throws ResourceNotFoundException {
         ResponseEntity<?> response = null;

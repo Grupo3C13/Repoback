@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Review;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,9 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Review> addReview(@RequestBody Review review){
-        return ResponseEntity.ok(reviewService.addReview(review));
+    public ResponseEntity<?> agregarResenia(@RequestBody Review review) throws ResourceNotFoundException {
+        reviewService.addReview(review);
+        return ResponseEntity.status(HttpStatus.OK).body(review.getId());
     }
 
     @GetMapping
@@ -28,9 +30,13 @@ public class ReviewController {
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<List<Review>> findReviewByProduct(@PathVariable Long id){
-        Optional<List<Review>> reviews = reviewService.findReviewByProductId(id);
-        return reviews.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public List<Review> findReviewByProduct(@PathVariable Long id)throws ResourceNotFoundException{
+        List<Review> lista = reviewService.findReviewByProductId(id);
+        if(lista!=null){
+            return lista;
+        }else {
+            throw new ResourceNotFoundException("No se encontraron reseñas para el libero.");
+        }
     }
 
 

@@ -24,7 +24,7 @@ public class Review {
     private LocalDateTime date;
 
     @Column
-    private int value;
+    private int score;
 
     @Column
     private String comment;

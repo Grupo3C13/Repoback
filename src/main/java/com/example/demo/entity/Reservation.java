@@ -1,6 +1,4 @@
 package com.example.demo.entity;
-
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,13 +19,11 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Muchos BookRent puede tener un User.
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private User user;
 
-    // Muchos BookRent puede tener un Book.
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

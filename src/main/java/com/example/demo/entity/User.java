@@ -41,15 +41,19 @@ public class User implements UserDetails {
     @Column
     private String address;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Review> reviews;
+
     @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinTable(name = "users_productFavorite",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productsFavs;
-
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Review> reviews;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -51,12 +51,12 @@ public class SecurityConfiguration {
 //                                .requestMatchers("/{productId}/categories/{categoriesId}").hasAuthority("ADMIN")
 //                                .requestMatchers("/{productId}/characteristics/{characteristicsId}").hasAuthority("ADMIN")
 
-//                                .requestMatchers("/bookRent/book/**").permitAll()
-//                                .requestMatchers("/bookRent/listar").permitAll()
-//                                .requestMatchers("/resenia/book/**").permitAll()
+//                                .requestMatchers("/reservation/product/**").permitAll()
+//                                .requestMatchers("/reservation/listar").permitAll()
+//                                .requestMatchers("/review/product/**").permitAll()
 
-//                                .requestMatchers("/bookRent/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/bookRent/modificar").hasAuthority("ADMIN")
+//                                .requestMatchers("/reservation/eliminar/**").hasAuthority("ADMIN")
+//                                .requestMatchers("/reservation/modificar").hasAuthority("ADMIN")
 
 //                                .requestMatchers("/characteristics/agregar").hasAuthority("ADMIN")
 //                                .requestMatchers("/characteristics/eliminar/**").hasAuthority("ADMIN")
