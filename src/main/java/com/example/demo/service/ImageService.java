@@ -25,7 +25,7 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public Long saveImage(Image image) {
+    public Long guardar(Image image) {
         logger.info("Image - guardar: Se va a guardar la imagen");
         imageRepository.save(image);
         return image.getId();
@@ -33,7 +33,7 @@ public class ImageService {
 
     public void modificar(Image image) {
         logger.info("Image - actualizar: Se va a actualizar la imagen");
-        saveImage(image);
+        guardar(image);
     }
 
 

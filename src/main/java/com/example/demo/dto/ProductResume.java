@@ -22,11 +22,12 @@ public class ProductResume {
     private Integer cantReviews;
     private List<Category> categories;
 
-    public ProductResume(Long id, String name, Double price, Double score, Integer cantReviews) {
+    public ProductResume(Long id, String name, Double price, String imgUrl, Double score, Integer cantReviews) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.score=score;
-        this.cantReviews=cantReviews;
+        this.imgUrl = imgUrl;
+        this.score = score;
+        this.cantReviews = cantReviews;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -17,16 +16,12 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column
-//    private String name;
-
-    @Column
     @NotNull
     private String url;
 
-
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "product_id")
+    @org.hibernate.annotations.Index(name = "idx_product")
     private Product product;
 
 }

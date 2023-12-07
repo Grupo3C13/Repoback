@@ -97,8 +97,8 @@ public class UserService  {
         if(lista != null){
             return lista;
         }else{
-            logger.error("No se ha encontrado ningun libro como favorito para el user  " + id);
-            throw new ResourceNotFoundException("No se encontraron libros favoritos para el user: "+ id);
+            logger.error("No se ha encontrado ninguno  " + id);
+            throw new ResourceNotFoundException("No se encontraron favoritos: "+ id);
         }
     }
 
@@ -128,8 +128,8 @@ public class UserService  {
             u.get().setProductsFavs(listaFav);
             guardar(u.get());
         }else {
-            logger.error("No se pudo eliminar el libro a favoritos.");
-            throw new ResourceNotFoundException("No se pudo eliminar el libro a favoritos.");
+            logger.error("No se pudo eliminar de favoritos.");
+            throw new ResourceNotFoundException("No se pudo eliminar de favoritos.");
         }
     }
 

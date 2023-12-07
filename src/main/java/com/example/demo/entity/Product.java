@@ -14,9 +14,10 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
-@Table(name = "products")
+@Table(name = "products", indexes = {
+        @Index(name = "idx_score", columnList = "score")})
+@JsonIgnoreProperties({"images"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +30,6 @@ public class Product {
     private String description;
 
     @Column
-    private Boolean active;
-
-    @Column
     private Double price;
 
     @Column
@@ -41,8 +39,6 @@ public class Product {
     private Double score;
     private String imgUrl;
 
-    @Column
-    private String model;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "products_categorias",
@@ -70,13 +66,7 @@ public class Product {
     private Set<Policy> policies = new HashSet<>();
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"product"})
-    private List<Image> images;
-
-    private List<String> imagesBase64;
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"product","user"})
+    @JsonIgnore
     private Set<Reservation> reservations = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
@@ -86,4 +76,17 @@ public class Product {
     @JsonIgnore
     private List<Product> productsFavs;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Image> images;
+
+    private List<String> imagesBase64;
+
+
+    public Product(String name, String description, Double price, String brand, Double score) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.brand = brand;
+        this.score = score;
+    }
 }

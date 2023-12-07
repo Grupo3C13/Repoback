@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
-@CrossOrigin(origins="http://localhost:8090")
+@CrossOrigin
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -59,12 +59,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchById(id));
     }
 
-    @PostMapping("/agregar")
+    @PostMapping("/add")
     @Transactional
     public ResponseEntity<?> agregar(@RequestBody Product product) throws ResourceNotFoundException{
-        String title = product.getName();
+        String name = product.getName();
         String description = product.getDescription();
-        List<Category> category = product.getCategories();
+        List<Category> lista = product.getCategories();
 
         List<String> base64Images = (product.getImagesBase64() != null) ? product.getImagesBase64() : Collections.emptyList();
 
@@ -76,34 +76,36 @@ public class ProductController {
 
         Long id = productService.addProduct(newProduct);
         newProduct.setId(id);
-        newProduct.setCategories(category);
+        newProduct.setCategories(lista);
 
         for (String base64Image : base64Images) {
             System.out.println("Base64 Image: " + base64Image);
 
             byte[] binaryData = Base64.getDecoder().decode(base64Image);
 
-            title=title.replace(" ","_");
-            String key = title + "_" + UUID.randomUUID().toString() + ".jpg";
+            name=name.replace(" ","_");
+            String key = name + "_" + UUID.randomUUID().toString() + ".jpg";
 
             try {
                 objectMetadata.setContentLength(binaryData.length);
 
+                // Subir la imagen a S3
                 s3.putObject("1023c13-grupo3", key, new ByteArrayInputStream(binaryData), objectMetadata);
 
+                // Crear una nueva entidad Image con la URL de la imagen
                 Image image = new Image();
                 image.setUrl("https://1023c13-grupo3.s3.amazonaws.com/" + key);
                 image.setProduct(newProduct);
-                imageService.saveImage(image);
+                imageService.guardar(image);
                 images.add(image);
 
 
             } catch (IllegalArgumentException | AmazonServiceException e) {
                 System.err.println("Error al procesar la imagen " + e.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregarlo.");
+                // Manejar el error apropiadamente (puede ser útil lograrlo o devolver un mensaje más detallado)
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregar producto.");
             }
         }
-
         newProduct.setImagesBase64(null);
         newProduct.setImages(images);
         newProduct.setImgUrl(newProduct.getImages().get(0).getUrl());
@@ -114,29 +116,29 @@ public class ProductController {
     }
 
     @PutMapping("/modificar")
-    public ResponseEntity<?> updateAProduct(@RequestBody Product product) throws ResourceNotFoundException{
+    public ResponseEntity<?> updateProduct(@RequestBody Product product) throws ResourceNotFoundException{
         productService.update(product);
-        return ResponseEntity.ok().body("Producto Modificado");
+        return ResponseEntity.ok().body("Se modifico.");
     }
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) throws ResourceNotFoundException {
         ResponseEntity<?> response = null;
         productService.delete(id);
-        response = ResponseEntity.status(HttpStatus.OK).body("eliminado");
+        response = ResponseEntity.status(HttpStatus.OK).body("Producto eliminado.");
         return response;
     }
-
-    @PutMapping("/{productId}/categories/{categoriesId}")
-    public ResponseEntity<?> agregarCategoria(@PathVariable Long productId, @PathVariable Long categoryId) throws ResourceNotFoundException{
+    @PutMapping("/{productsId}/categories/{categoriesId}")
+    public ResponseEntity<?> agregarCategoria(@PathVariable Long productsId, @PathVariable Long categoriesId) throws ResourceNotFoundException{
         ResponseEntity<?> response=null;
-        productService.guardarCategoria(productId,categoryId);
+        productService.guardarCategoria(productsId,categoriesId);
         return  ResponseEntity.ok().body("Categoria agregada");
     }
 
-    @PutMapping("/{productId}/characteristic/{characteristicId}")
-    public ResponseEntity<?> agregarCaracteristica(@PathVariable Long productId, @PathVariable Long characteristicId) throws ResourceNotFoundException{
+    @PutMapping("/{productsId}/characteristics/{characteristicId}")
+    public ResponseEntity<?> agregarCaracteristica(@PathVariable Long productsId, @PathVariable Long characteristicId) throws ResourceNotFoundException{
         ResponseEntity<?> response=null;
-        productService.guardarCaracteristica(productId,characteristicId);
+        productService.guardarCaracteristica(productsId,characteristicId);
         return response;
     }
 

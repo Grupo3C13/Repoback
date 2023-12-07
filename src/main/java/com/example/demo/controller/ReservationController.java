@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@CrossOrigin(origins="http://localhost:8090")
+@CrossOrigin
 @RestController
 @RequestMapping("/reservation")
 public class ReservationController {
@@ -40,14 +40,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.buscarPorId(id));
     }
 
-     @PostMapping("/agregar")
-    public ResponseEntity<?> agregarReserva(@RequestBody Reservation reservation) {
-        try {
-            Long reservationId = reservationService.guardar(reservation);
-            return ResponseEntity.status(HttpStatus.CREATED).body(reservationId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al agregar la reserva.");
-        }
+    @PostMapping("/agregar")
+    public ResponseEntity<?> agregarBookRent(@RequestBody Reservation reservation) throws ResourceNotFoundException {
+
+        reservationService.guardar(reservation);
+        return ResponseEntity.status(HttpStatus.OK).body(reservation.getId());
     }
 
     @PutMapping("/modificar")

@@ -13,7 +13,10 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,24 +43,30 @@ public class ReservationService {
 
 
 
-public Long guardar(Reservation reservation) throws ResourceNotFoundException {
-    Long userId = reservation.getUser().getId();
-    Long productId = reservation.getProduct().getId();
+    public Long guardar(Reservation reservation) throws ResourceNotFoundException {
+        Long userId = reservation.getUser().getId();
+        Long productId = reservation.getProduct().getId();
+        UserDTO u = userService.buscarPorId(userId);
+        ProductDTO p = productService.searchById(productId);
+        objectMapper.registerModule(new JavaTimeModule());
+        User user = objectMapper.convertValue(u,User.class);
+        Product product = objectMapper.convertValue(p, Product.class);
+        reservation.setProduct(product);
+        reservation.setUser(user);
 
-    UserDTO user = userService.buscarPorId(userId);
-    ProductDTO product = productService.searchById(productId);
+        LocalDate fechaInicio =reservation.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaFin = reservation.getReturnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        fechaInicio=fechaInicio.plusDays(1);
+        fechaFin=fechaFin.plusDays(1);
+        Date inicioFormateado = Date.from(fechaInicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date finFormateado = Date.from(fechaFin.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-    objectMapper.registerModule(new JavaTimeModule());
-    User convertedUser = objectMapper.convertValue(user, User.class);
-    Product convertedProduct = objectMapper.convertValue(product, Product.class);
+        reservation.setStartDate(inicioFormateado);
+        reservation.setReturnDate(finFormateado);
 
-    reservation.setProduct(convertedProduct);
-    reservation.setUser(convertedUser);
-
-    reservationRepository.save(reservation);
-    return reservation.getId();
-}
-
+        reservationRepository.save(reservation);
+        return reservation.getId();
+    }
     
     public List<Reservation> mostrarTodos() {
         List<Reservation> reservations = new ArrayList<>();

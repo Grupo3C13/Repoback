@@ -30,47 +30,47 @@ public class SecurityConfiguration {
                                 .disable())
                 .authorizeHttpRequests(authRequest ->
                         authRequest
-                                .requestMatchers("/**").permitAll()
-//                                .requestMatchers("/doc/**").permitAll()
-//                                .requestMatchers("/v3/api-docs/**").permitAll()
-//                                .requestMatchers("/auth/**").permitAll()
-//
-//                                .requestMatchers("/products/listar").permitAll()
-//                                .requestMatchers("/products/listarexpress").permitAll()
-//                                .requestMatchers("/products/{id}").permitAll()
-//
-//                                .requestMatchers("/characteristics/listar").permitAll()
-//                                .requestMatchers("/characteristics/{id}").permitAll()
-//
-//                                .requestMatchers("/categories/listar").permitAll()
-//                                .requestMatchers("/categories/{id}").permitAll()
+//                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/doc/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
 
-//                                .requestMatchers("/products/agregar").hasAuthority("ADMIN")
-//                                .requestMatchers("/products/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/products/modificar").hasAuthority("ADMIN")
-//                                .requestMatchers("/{productId}/categories/{categoriesId}").hasAuthority("ADMIN")
-//                                .requestMatchers("/{productId}/characteristics/{characteristicsId}").hasAuthority("ADMIN")
+                                .requestMatchers("/products/listar").permitAll()
+                                .requestMatchers("/products/listarexpress").permitAll()
+                                .requestMatchers("/products/{id}").permitAll()
 
-//                                .requestMatchers("/reservation/product/**").permitAll()
-//                                .requestMatchers("/reservation/listar").permitAll()
-//                                .requestMatchers("/review/product/**").permitAll()
+                                .requestMatchers("/characteristics/listar").permitAll()
+                                .requestMatchers("/characteristics/{id}").permitAll()
 
-//                                .requestMatchers("/reservation/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/reservation/modificar").hasAuthority("ADMIN")
+                                .requestMatchers("/categories/listar").permitAll()
+                                .requestMatchers("/categories/{id}").permitAll()
 
-//                                .requestMatchers("/characteristics/agregar").hasAuthority("ADMIN")
-//                                .requestMatchers("/characteristics/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/characteristics/modificar").hasAuthority("ADMIN")
-//
-//                                .requestMatchers("/categories/agregar").hasAuthority("ADMIN")
-//                                .requestMatchers("/categories/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/categories/modificar").hasAuthority("ADMIN")
-//
-//                                .requestMatchers("/user/agregar").hasAuthority("ADMIN")
-//                                .requestMatchers("/user/eliminar/**").hasAuthority("ADMIN")
-//                                .requestMatchers("/user/modificar").hasAuthority("ADMIN")
-//
-//                                .anyRequest().authenticated()
+                                .requestMatchers("/products/add").hasAuthority("ADMIN")
+                                .requestMatchers("/products/eliminar/**").hasAuthority("ADMIN")
+                                .requestMatchers("/products/modificar").hasAuthority("ADMIN")
+                                .requestMatchers("/{productsId}/categories/{categoriesId}").hasAuthority("ADMIN")
+                                .requestMatchers("/{productsId}/characteristics/{characteristicsId}").hasAuthority("ADMIN")
+
+                                .requestMatchers("/reservation/product/**").permitAll()
+                                .requestMatchers("/reservation/listar").permitAll()
+                                .requestMatchers("/review/product/**").permitAll()
+
+                                .requestMatchers("/reservation/eliminar/**").hasAuthority("ADMIN")
+                                .requestMatchers("/reservation/modificar").hasAuthority("ADMIN")
+
+                                .requestMatchers("/characteristics/agregar").hasAuthority("ADMIN")
+                                .requestMatchers("/characteristics/eliminar/**").hasAuthority("ADMIN")
+                                .requestMatchers("/characteristics/modificar").hasAuthority("ADMIN")
+
+                                .requestMatchers("/categories/agregar").hasAuthority("ADMIN")
+                                .requestMatchers("/categories/eliminar/**").hasAuthority("ADMIN")
+                                .requestMatchers("/categories/modificar").hasAuthority("ADMIN")
+
+                                .requestMatchers("/user/agregar").hasAuthority("ADMIN")
+                                .requestMatchers("/user/eliminar/**").hasAuthority("ADMIN")
+                                .requestMatchers("/user/modificar").hasAuthority("ADMIN")
+
+                                .anyRequest().authenticated()
                 )
                 .cors(withDefaults())
                 .sessionManagement(sessionManager ->
@@ -81,9 +81,5 @@ public class SecurityConfiguration {
 
 
                 .build();
-
-
     }
-
-
 }

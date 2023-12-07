@@ -25,6 +25,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p.characteristics FROM Product p WHERE p.id = :productId")
     List<Characteristics> searchCharacteristicsById(@Param("productId") Long productId);
 
-    @Query("SELECT new com.example.demo.dto.ProductResume(p.id, p.name, p.price, p.score, p.cantReviews) FROM Product p ")
+    @Query("SELECT new com.example.demo.dto.ProductResume(p.id, p.name, p.price, p.imgUrl, p.score, p.cantReviews) FROM Product p ")
     List<ProductResume> findProductResume();
 }

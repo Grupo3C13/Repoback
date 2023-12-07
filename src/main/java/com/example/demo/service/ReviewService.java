@@ -101,7 +101,7 @@ public class ReviewService {
         if(lista!=null){
             return lista;
         }
-        throw new ResourceNotFoundException("No existen reseñas para el libro");
+        throw new ResourceNotFoundException("No existen reseñas");
 
     }
 }

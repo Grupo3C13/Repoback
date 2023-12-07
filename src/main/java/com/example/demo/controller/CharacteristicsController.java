@@ -16,7 +16,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
-@CrossOrigin(origins="http://localhost:8090")
+@CrossOrigin
 @RestController
 @RequestMapping("/characteristics")
 public class CharacteristicsController {

@@ -20,14 +20,14 @@ public class NotaSeguraApplication {
 		SpringApplication.run(NotaSeguraApplication.class, args);
 	}
 
-//	@Bean
-//	public CommandLineRunner demo(JdbcTemplate jdbcTemplate) {
-//		return (args) -> {
-//
-//			System.out.println("Database connection successful.");
-//		};
-//	}
-//
+	@Bean
+	public CommandLineRunner demo(JdbcTemplate jdbcTemplate) {
+		return (args) -> {
+
+			System.out.println("Database connection successful.");
+		};
+	}
+
 //	@Bean
 //	public WebMvcConfigurer corsConfigurer(){
 //		return new WebMvcConfigurer() {

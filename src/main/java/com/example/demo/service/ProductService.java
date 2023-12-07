@@ -39,7 +39,7 @@ public class ProductService {
     }
 
     public Long addProduct(Product product) throws ResourceNotFoundException {
-        logger.info("Libros - guardar: Se va a guardar el libro");
+        logger.info("Guardado");
         if(product.getCantReviews()==null){
             product.setCantReviews(0);
             product.setScore(0d);
@@ -89,7 +89,7 @@ public class ProductService {
             productDTO.setCharacteristics(characteristics);
             return productDTO;
         } else {
-            throw new ResourceNotFoundException("El libro no existe");
+            throw new ResourceNotFoundException("No existe");
         }
     }
 
@@ -98,7 +98,7 @@ public class ProductService {
         if (lista != null) {
             return lista;
         } else {
-            throw new ResourceNotFoundException("No se encontraron imagenes para el libro con id: " + id);
+            throw new ResourceNotFoundException("No se encontraron imagenes: " + id);
         }
     }
     public List<Category> buscarCategoria(Long id) throws ResourceNotFoundException{
@@ -156,19 +156,18 @@ public class ProductService {
         List<ProductResume> lista = productRepository.findProductResume();
         for(ProductResume b : lista){
             b.setCategories(productRepository.searchCategoryById(b.getId()));
-            List<String> listaImagenes = productRepository.searchImage(b.getId());
-            String imagen = listaImagenes.stream().findFirst().orElse(null);
-            b.setImgUrl(imagen);
+//            List<String> listaImagenes = productRepository.searchImage(b.getId());
+//            String imagen = listaImagenes.stream().findFirst().orElse(null);
+//            b.setImgUrl(imagen);
         }
         return lista;
     }
 
     public void delete(Long id) throws ResourceNotFoundException {
-        System.out.println("DENTRO DE ELIMINAR LIBRO");
         Optional<Product> found = productRepository.findById(id);
         if (found.isPresent()) {
-            deleteAllFavs(id);
-            logger.warn("Se ha eliminado el libro");
+            productRepository.deleteById(id);
+            logger.warn("Se ha elimino");
         } else {
             logger.error("No se ha encontrado con id " + id);
             throw new ResourceNotFoundException("No se ha encontrado");

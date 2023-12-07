@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(origins="http://localhost:8090")
+@CrossOrigin
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -34,9 +34,10 @@ public class CategoryController {
     @Autowired
     private AmazonS3 s3;
 
-    @GetMapping
-    public ResponseEntity<List<Category>>  getAllCategories(){
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    @GetMapping("/listar")
+    public List<Category> listarCategorias() {
+        List<Category> categorias = categoryService.getAllCategories();
+        return categorias;
     }
 
     @GetMapping("/{id}")
@@ -66,15 +67,17 @@ public class CategoryController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/modificar")
     public ResponseEntity<?> actualizarUnaCategoria(@RequestBody Category category) {
         categoryService.updateCategory(category);
         return ResponseEntity.ok().body("Se modificó la categoría.");
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deletecategory(@PathVariable Long id ) throws ResourceNotFoundException {
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) throws ResourceNotFoundException {
+        ResponseEntity<?> response = null;
         categoryService.deletecategory(id);
-        return ResponseEntity.ok("Category with id "+ id+" was successfully eliminated. ");
+        response = ResponseEntity.status(HttpStatus.OK).body("Categoría eliminada.");
+        return response;
     }
 }

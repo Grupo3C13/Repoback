@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins="http://localhost:8090")
+@CrossOrigin
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -61,7 +61,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @GetMapping("/mostrarFav/{id}")
+    @GetMapping("/mostrarFav/{usersid}")
     public List<Product> mostrarFavoritos(@PathVariable Long id) throws ResourceNotFoundException{
         List<Product> lista = null;
         lista = userService.listarFavoritos(id);
